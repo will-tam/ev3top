@@ -1,0 +1,40 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+# Standard library import.
+import sys
+import time
+
+import ev3dev.ev3 as ev3
+
+# Third-part library import.
+
+# Project library import.
+import HTMLServer
+
+######################
+
+
+######################
+
+def main(arg):
+    """
+    Main function.
+    @parameters : some arguments, in case of use.
+    @return : 0 = all was good.
+              ... = some problem occures.
+    """
+    HTMLsrv = HTMLServer.HTMLServer()
+
+    HTMLsrv.run(HTMLsrv.frmwk, host='10.42.0.131', port=8080)   # main loop introducing by server it-self.
+
+    while True:
+        pass
+
+    return 0
+
+######################
+
+if (__name__ == "__main__"):
+    rc = main(sys.argv[1:])      # Keep only the argus after the script name.
+    sys.exit(rc)
