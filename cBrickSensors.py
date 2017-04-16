@@ -16,9 +16,12 @@ class cBrickSensors():
     # Public attributes.
         sensors = discovered sensors list.
         getSensorsInfos = an associate sensors / function dictionnary, to get informations about sensors.
+        debug = true to print exceptions, everelse false (default).
 
     # Properties
         colorSensorMode = mode for the color sensor. (setter only)
+        irSensorMode = mode for the ir sensor. (setter only)
+
     """
 
     # Private attributes.
@@ -42,7 +45,9 @@ class cBrickSensors():
         self.__irSensor = ev3core.InfraredSensor()
         self.__colorSensor = ev3core.ColorSensor()
 
-        self.__colorSensorMode = "COL-REFLECT"
+        self.sensors = []
+
+        self.debug = False
 
     def __str__(self):
         """
@@ -73,7 +78,7 @@ class cBrickSensors():
         """
         Return the values of this sensor.
         @parameter : none.
-        @return : Dictionnary of values from this sensor.
+        @return : Dictionnary of values from this sensor. If problem occurs, return False.
         """
         ret = {}
         try:
@@ -83,7 +88,9 @@ class cBrickSensors():
             ret["pressed"] = True if self.__touchSensor.is_pressed else False
         except Exception as e:
             self.__touchSensor = ev3core.TouchSensor()
-            return "__getTouchInfos() : can't read touch sensor device => {}. New object instanced".format(e)
+            if self.debug:
+                print("__getTouchInfos() : can't read touch sensor device => {}. New object instanced".format(e))
+            ret = False
 
         return ret
 
@@ -91,23 +98,52 @@ class cBrickSensors():
         """
         Return the values of this sensor.
         @parameter : none.
-        @return : Dictionnary of values from this sensor.
+        @return : Dictionnary of values from this sensor. If problem occurs, return False.
         """
         ret = {}
         try:
             ret["name"] = self.__irSensor.driver_name
             ret["address"] = self.__irSensor.address
+            ret["modes"] = self.__irSensor.modes
+            ret["mode"] = self.__irSensor.mode
+            if ret["mode"] in ["IR-PROX", "IR-REM-A"]:
+                vals = self.__irSensor.value(0)
+            elif ret["mode"] in ["IR-REMOTE", "IR-S-ALT"]:
+                vals = [self.__irSensor.value(i) for i in range(0, 4)]
+            elif ret["mode"] == "IR-SEEK":
+                vals = [self.__irSensor.value(i) for i in range(0, 8)]
+            elif ret["mode"] == "IR-CAL":
+                vals = [self.__irSensor.value(i) for i in range(0, 2)]
+            else:
+                vals = None
+            ret["values"] = vals
+            ret["proximity"] = self.__irSensor.proximity
+
         except Exception as e:
             self.__irSensor = ev3core.InfraredSensor()
-            return "__getIrInfos() : can't read touch sensor device => {}. New object instanced".format(e)
+            if self.debug:
+                print("__getIrInfos() : can't read touch sensor device => {}. New object instanced".format(e))
+            ret = False
 
         return ret
+
+    def __setIrSensorMode(self, mode):
+        """
+        """
+        try:
+            self.__irSensor.mode = mode
+
+        except Exception as e:
+            if self.debug:
+                print("Can't change IR sensor mode cause :", e)
+            else:
+                pass
 
     def __getColorInfos(self):
         """
         Return the values of this sensor.
         @parameter : none.
-        @return : Dictionnary of values from this sensor.
+        @return : Dictionnary of values from this sensor. If problem occurs, return False.
         """
         ret = {}
         try:
@@ -115,7 +151,6 @@ class cBrickSensors():
             ret["address"] = self.__colorSensor.address
             ret["modes"] = self.__colorSensor.modes
             ret["mode"] = self.__colorSensor.mode
-            ret["mode"] = "Be"
             if ret["mode"] in ["COL-REFLECT", "COL-AMBIENT", "COL-COLOR"]:
                 vals = self.__colorSensor.value(0)
             elif ret["mode"] == "REF-RAW":
@@ -126,29 +161,40 @@ class cBrickSensors():
                 vals = [self.__colorSensor.value(i) for i in range(0, 4)]
             else:
                 vals = None
-
             ret["values"] = vals
+            ret["ambient_light_intensity"] = self.__colorSensor.ambient_light_intensity
+            ret["raw"] = self.__colorSensor.raw
+            ret["color"] = self.__colorSensor.color
+            ret["red"] = self.__colorSensor.red
+            ret["green"] = self.__colorSensor.green
+            ret["blue"] = self.__colorSensor.blue
+            ret["reflected_light_intensity"] = self.__colorSensor.reflected_light_intensity
 
         except Exception as e:
             self.__colorSensor = ev3core.ColorSensor()
-            return "__getColorInfos() : can't read touch sensor device => {}. New object instanced".format(e)
+            if self.debug:
+                print("__getColorInfos() : can't read touch sensor device => {}. New object instanced".format(e))
+            ret = False
 
         return ret
 
     def __setColorSensorMode(self, mode):
         """
         """
-        print("__setColorSensorMode")
         try:
             self.__colorSensor.mode = mode
 
-        except:
-            pass
+        except Exception as e:
+            if self.debug:
+                print("Can't change color sensor mode cause :", e)
+            else:
+                pass
 
 
     # Properties
 
     colorSensorMode = property(None, __setColorSensorMode)
+    irSensorMode = property(None, __setIrSensorMode)
 
 
 if __name__ == "__main__":

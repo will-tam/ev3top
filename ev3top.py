@@ -78,11 +78,19 @@ def main(arg):
         print(motors)
 #        for m in motors:
 #            print("\tPort : {} - driver name : {}".format(m.address, m.driver_name))
+
+        print("Sensors:")
+        bs.debug = True
 #        bs.colorSensorMode = "RGB-RAW"
+#        bs.irSensorMode = "IR-SEEK"
         bs.update()
         for s in bs.sensors:
             try:
-                print(bs.getSensorsInfosFunc[s.driver_name]())
+                r = bs.getSensorsInfosFunc[s.driver_name]()
+                if r:
+                    print(r)
+                else:
+                    print("Use bs.debug = True to know what happened")
             except:
                 pass
 
