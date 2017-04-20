@@ -129,6 +129,9 @@ class cBrickSensors():
 
     def __setIrSensorMode(self, mode):
         """
+        Setter of the mode to the IR sensor.
+        @parameter : mode.
+        @return : None.
         """
         try:
             self.__irSensor.mode = mode
@@ -180,6 +183,9 @@ class cBrickSensors():
 
     def __setColorSensorMode(self, mode):
         """
+        Setter of the mode to the Color sensor.
+        @parameter : mode.
+        @return : None.
         """
         try:
             self.__colorSensor.mode = mode
@@ -192,7 +198,7 @@ class cBrickSensors():
 
 
     # Properties
-
+    # Only setters.
     colorSensorMode = property(None, __setColorSensorMode)
     irSensorMode = property(None, __setIrSensorMode)
 

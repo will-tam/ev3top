@@ -2,13 +2,12 @@
 <!DOCTYPE Session SYSTEM "Session-5.0.dtd">
 <!-- eric6 session file for project ev3top -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2017-04-16, 10:45:31 -->
+<!-- Saved: 2017-04-20, 20:41:24 -->
 <Session version="5.0">
   <Filenames>
-    <Filename cline="84" cindex="4" folds="" zoom="0">/home/will/data/programmation/EV3/proj/python/ev3top/ev3top.py</Filename>
-    <Filename cline="168" cindex="51" folds="" zoom="0">/home/will/data/programmation/EV3/proj/python/ev3top/cBrickSensors.py</Filename>
+    <Filename cline="10" cindex="0" folds="" zoom="0">/home/will/data/programmation/EV3/proj/python/ev3top/ev3top.py</Filename>
   </Filenames>
-  <ActiveWindow cline="168" cindex="51">/home/will/data/programmation/EV3/proj/python/ev3top/cBrickSensors.py</ActiveWindow>
+  <ActiveWindow cline="10" cindex="0">/home/will/data/programmation/EV3/proj/python/ev3top/ev3top.py</ActiveWindow>
   <Breakpoints/>
   <Watchexpressions/>
   <DebugInfo>
@@ -26,6 +25,8 @@
   <Bookmarks/>
   <ProjectBrowserStates>
     <ProjectBrowserState name="sources">
+      <ExpandedItemName>/home/will/data/programmation/EV3/proj/python/ev3top/cBrickMotors.py</ExpandedItemName>
+      <ExpandedItemName>/home/will/data/programmation/EV3/proj/python/ev3top/cBrickMotors.py@@12</ExpandedItemName>
       <ExpandedItemName>/home/will/data/programmation/EV3/proj/python/ev3top/cBrickSensors.py</ExpandedItemName>
       <ExpandedItemName>/home/will/data/programmation/EV3/proj/python/ev3top/cBrickSensors.py@@12</ExpandedItemName>
       <ExpandedItemName>/home/will/data/programmation/EV3/proj/python/ev3top/ev3top.py</ExpandedItemName>

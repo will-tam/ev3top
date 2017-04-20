@@ -72,12 +72,19 @@ def main(arg):
         if k == 'q':
             break
 
-        motors = [m for m in ev3core.list_motors()]
-#        motors = ev3core.list_motors()
         print("Motors :")
-        print(motors)
-#        for m in motors:
-#            print("\tPort : {} - driver name : {}".format(m.address, m.driver_name))
+        bm.debug = True
+        bm.update()
+#        print(bm)
+        for m in bm.motors:
+            try:
+                r = bm.getMotorsInfos[m.driver_name]()
+                if r:
+                    print(r)
+                else:
+                    print("Use br.debug = True to know what happened")
+            except:
+                pass
 
         print("Sensors:")
         bs.debug = True
