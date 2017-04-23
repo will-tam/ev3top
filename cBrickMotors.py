@@ -17,7 +17,6 @@ class cBrickMotors():
 
         portsMotors = the ports assigned to the motors.
         motors = discovered plugged motors list.
-        getMotorsInfos = an associate motors / function dictionnary, to get informations about motors.
         debug = true to print exceptions, everelse false (default).
     """
 
@@ -35,12 +34,7 @@ class cBrickMotors():
         """
         self.__bp = bp
 
-        self.getMotorsInfos = {"lego-ev3-m-motor": self.__getMotorsInfos,
-                               "lego-ev3-l-motor": self.__getMotorsInfos,
-                              }
-
         self.portsMotors = ["outA", "outB", "outC", "outD", ]
-
         self.update()
 
         self.debug = False
@@ -52,9 +46,7 @@ class cBrickMotors():
         @return : the string to print.
         """
         ret = "Motors :\n"
-        motorsPorts = [p for p in self.motors.keys()]
-        motorsPorts.sort()
-        for port in motorsPorts:
+        for port in self.portsMotors:
             motor = self.motors[port]
             if motor:
                 ret += "\t{} => {} - Port : {} - driver name : {}\n".format(str(motor),\
@@ -69,38 +61,61 @@ class cBrickMotors():
     def update(self):
         """
         Discover and update the motors plugged on the brick.
+        Don't forget to invoke cBrickPorts.scan() before call it.
         @parameter : none.
         @return : none.
         """
         self.motors = {p : self.__bp.ports[p] for p in self.portsMotors}
 
+    def getMotorsInfos(self, motor):
+        """
+        Return informations about the motor according to its type.
+        @parameter : motor = the motor's object which to know informations.
+        @return : the dictionnary of values about motor, or False if something wrong.
+        """
+        getMotorsInfos = {"lego-ev3-m-motor": self.__getMotorsInfos,
+                          "lego-ev3-l-motor": self.__getMotorsInfos,
+                         }
+
+        return getMotorsInfos[motor.driver_name](motor)
+
 
     # Private methods.
 
-    def __getMotorsInfos(self):
+    def __getMotorsInfos(self, motor):
         """
         Return the values of this kind of motor.
-        @parameter : none.
+        @parameter : motor = the motor's object which to know informations.
         @return : Dictionnary of values from this kind of motor. If problem occurs, return False.
         """
         ret = {}
         try:
-            ret["name"] = self.__motor.driver_name
-            ret["address"] = self.__motor.address
-            ret["commands"] = self.__motor.commands
-#            ret["count_per_m"] = self.__motor.count_per_m
-            ret["count_per_rot"] = self.__motor.count_per_rot
-            ret["duty_cycle"] = self.__motor.duty_cycle
-            ret["duty_cycle_sp"] = self.__motor.duty_cycle_sp
-#            ret["full_travel_count"]  =self.__motor.full_travel_count
-            ret["max_speed"] = self.__motor.max_speed
-            ret["polarity"] = self.__motor.polarity
-            ret["position"] = self.__motor.position
+            # see library documentation for what to use, and why the try/except using.
+            ret["name"] = motor.driver_name
+            ret["address"] = motor.address
+            ret["commands"] = motor.commands
+            try:
+                ret["count_per_m"] = motor.count_per_m
+            except:
+                pass
+            try:
+                ret["count_per_rot"] = motor.count_per_rot
+            except:
+                pass
+            ret["duty_cycle"] = motor.duty_cycle
+            ret["duty_cycle_sp"] = motor.duty_cycle_sp
+            try:
+                ret["full_travel_count"] = motor.full_travel_count
+            except:
+                pass
+            ret["max_speed"] = motor.max_speed
+            ret["polarity"] = motor.polarity
+            ret["position"] = motor.position
 
         except Exception as e:
-            self.__motor = ev3core.Motor()
+            pass
             if self.debug:
-                print("__getMotorsInfos() : can't read motor device => {}. New object instanced".format(e))
+                print("getMotorsInfos() : can't read motor device => {}.\nMaybe unplugged".format(e))
             ret = False
 
         return ret

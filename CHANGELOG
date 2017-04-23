@@ -1,0 +1,14 @@
+2017-04-16 : 1st commit 
+
+2017-04-16 : cBrickSensor class : development, 1st phase 
+
+2017-04-16 : Initial commit 
+
+2017-04-16 : Add forgot README.md 
+
+2017-04-16 : Merge branch 'master' of https://github.com/will-tam/ev3top cause LICENSE file created by GitHub. 
+
+2017-04-20 : I should began with motors git status ! 
+
+2017-04-23 : Change to first take into account the ports, and after devices plugged-in. 	new file:   cBrickPorts.py
+

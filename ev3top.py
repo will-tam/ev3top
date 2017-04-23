@@ -64,19 +64,24 @@ def main(arg):
     @return : 0 = all was good.
               ... = some problem occures.
     """
-#    bs = cBS.cBrickSensors()
-#    bs.debug = True
-    try:
+    try:    # Instantiate brick ports object.
         bp = cBP.cBrickPorts()
     except Exception as e:
-        print("Exception occured :", e)
+        print("Exception occured on bp init instance:", e)
         return 1
 
-    try:
+    try:    # Instantiate brick motors object.
         bm = cBM.cBrickMotors(bp)
         bm.debug = True
     except Exception as e:
-        print("Exception occured :", e)
+        print("Exception occured on bm init instance:", e)
+        return 1
+
+    try:    # Instantiate brick sensors object.
+        bs = cBM.cBrickSensors(bp)
+        bs.debug = True
+    except Exception as e:
+        print("Exception occured on bs init instance:", e)
         return 1
 
     while True:
@@ -85,30 +90,27 @@ def main(arg):
         if k == 'q':
             break
 
-        bp.scan()
-        bm.update()
-        print(bm)
+        bp.scan()       # Scan ports to detect which device is plugged.
 
-#        print("Motors :")
-#        bm.update()
-#        print("bm.portsMotors =", bm.portsMotors)
+        bm.update()     # Update the motors ports (bm.motors).
+        bs.update()     # Update the sensors ports (bs.sensors).
 #        print(bm)
-#        for p, m in bm.portsMotors.items():
-#            print("Port {} : device {}".format(p, dir(m)))
-#            pass
-#            r = bm.getMotorsInfos[bm.portsMotors[m]]
-#            print(r)
+#        print(bs)
 
-#            try:
-#                r = bm.getMotorsInfos[m.driver_name]()
-#                if r:
-#                    print(r)
-#                else:
-#                    print("Use br.debug = True to know what happened")
-#            except:
-#                pass
+        print("Motors infos :")
+        for port in bm.portsMotors:
+            motor = bm.motors[port]
+            if motor:
+                motorInfo = bm.getMotorsInfos(motor)
+                print(motorInfo)
 
-#        print("Sensors:")
+        print("Sensors infos:")     # TODO : TEST IT
+        for port in bs.portsSensors:
+            sensor = bs.sensors[port]
+            if sensor:
+                sensorInfo = bs.getSensorInfos(sensor)
+                print(sensorInfo)
+
 ##        bs.colorSensorMode = "RGB-RAW"
 ##        bs.irSensorMode = "IR-SEEK"
 #        bs.update()

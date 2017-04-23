@@ -11,7 +11,7 @@ import ev3dev.helper as ev3h
 
 class cBrickPorts():
     """
-    Class for ports manipulations.
+    Class for ports interface.
 
     Public attributes:
 
