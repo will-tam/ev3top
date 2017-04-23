@@ -16,7 +16,8 @@ import ev3dev.brickpi as ev3bp
 import ev3dev.helper as ev3h
 
 # Project library import.
-import cBrickSensors as cBS
+import cBrickPorts as cBP
+#import cBrickSensors as cBS
 import cBrickMotors as cBM
 
 ######################
@@ -63,8 +64,20 @@ def main(arg):
     @return : 0 = all was good.
               ... = some problem occures.
     """
-    bm = cBM.cBrickMotors()
-    bs = cBS.cBrickSensors()
+#    bs = cBS.cBrickSensors()
+#    bs.debug = True
+    try:
+        bp = cBP.cBrickPorts()
+    except Exception as e:
+        print("Exception occured :", e)
+        return 1
+
+    try:
+        bm = cBM.cBrickMotors(bp)
+        bm.debug = True
+    except Exception as e:
+        print("Exception occured :", e)
+        return 1
 
     while True:
         print("q to quit")
@@ -72,34 +85,42 @@ def main(arg):
         if k == 'q':
             break
 
-        print("Motors :")
-        bm.debug = True
+        bp.scan()
         bm.update()
-#        print(bm)
-        for m in bm.motors:
-            try:
-                r = bm.getMotorsInfos[m.driver_name]()
-                if r:
-                    print(r)
-                else:
-                    print("Use br.debug = True to know what happened")
-            except:
-                pass
+        print(bm)
 
-        print("Sensors:")
-        bs.debug = True
-#        bs.colorSensorMode = "RGB-RAW"
-#        bs.irSensorMode = "IR-SEEK"
-        bs.update()
-        for s in bs.sensors:
-            try:
-                r = bs.getSensorsInfosFunc[s.driver_name]()
-                if r:
-                    print(r)
-                else:
-                    print("Use bs.debug = True to know what happened")
-            except:
-                pass
+#        print("Motors :")
+#        bm.update()
+#        print("bm.portsMotors =", bm.portsMotors)
+#        print(bm)
+#        for p, m in bm.portsMotors.items():
+#            print("Port {} : device {}".format(p, dir(m)))
+#            pass
+#            r = bm.getMotorsInfos[bm.portsMotors[m]]
+#            print(r)
+
+#            try:
+#                r = bm.getMotorsInfos[m.driver_name]()
+#                if r:
+#                    print(r)
+#                else:
+#                    print("Use br.debug = True to know what happened")
+#            except:
+#                pass
+
+#        print("Sensors:")
+##        bs.colorSensorMode = "RGB-RAW"
+##        bs.irSensorMode = "IR-SEEK"
+#        bs.update()
+#        for s in bs.sensors:
+#            try:
+#                r = bs.getSensorsInfosFunc[s.driver_name]()
+#                if r:
+#                    print(r)
+#                else:
+#                    print("Use bs.debug = True to know what happened")
+#            except:
+#                pass
 
         time.sleep(0.5)
         print("-------")

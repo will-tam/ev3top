@@ -13,12 +13,14 @@ class cBrickSensors():
     """
     Class for sensors manipulations.
 
-    # Public attributes.
+    Public attributes:
+
         sensors = discovered sensors list.
         getSensorsInfos = an associate sensors / function dictionnary, to get informations about sensors.
         debug = true to print exceptions, everelse false (default).
 
-    # Properties
+    Properties:
+
         colorSensorMode = mode for the color sensor. (setter only)
         irSensorMode = mode for the ir sensor. (setter only)
 
@@ -53,7 +55,7 @@ class cBrickSensors():
         """
         When use print() on this class
         @parameters : none.
-        @return : the stringto print.
+        @return : the string to print.
         """
         ret = "Sensors :\n"
         for s in self.sensors:

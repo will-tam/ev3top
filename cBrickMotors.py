@@ -11,35 +11,37 @@ import ev3dev.helper as ev3h
 
 class cBrickMotors():
     """
-    Class for sensors manipulations.
+    Class for motors manipulations.
 
-    # Public attributes.
-        motors = discovered motors list.
+    Public attributes:
+
+        portsMotors = the ports assigned to the motors.
+        motors = discovered plugged motors list.
         getMotorsInfos = an associate motors / function dictionnary, to get informations about motors.
         debug = true to print exceptions, everelse false (default).
-
-    # Properties
     """
 
     # Private attributes.
-    #__touchSensor ; __irSensor ; __colorSensor = instance of the sensors.
+    # __bp = instance of the brick's ports object (from class cBrickPorts). Defined in construtor.
 
 
     # Public methods.
 
-    def __init__(self):
+    def __init__(self, bp):
         """
         Constructor.
-        @parameter : none.
+        @parameter : bp = instance of the brick's ports object (from class cBrickPorts).
         @return : none.
         """
+        self.__bp = bp
+
         self.getMotorsInfos = {"lego-ev3-m-motor": self.__getMotorsInfos,
                                "lego-ev3-l-motor": self.__getMotorsInfos,
                               }
 
-        self.__motor = ev3core.Motor()
+        self.portsMotors = ["outA", "outB", "outC", "outD", ]
 
-        self.motors = []
+        self.update()
 
         self.debug = False
 
@@ -47,14 +49,21 @@ class cBrickMotors():
         """
         When use print() on this class
         @parameters : none.
-        @return : the stringto print.
+        @return : the string to print.
         """
         ret = "Motors :\n"
-        for m in self.motors:
-            ret += "\t{} => {} - Port : {} - driver name : {}\n".format(str(m),\
-                                                                        repr(m),\
-                                                                        m.address,\
-                                                                        m.driver_name)
+        motorsPorts = [p for p in self.motors.keys()]
+        motorsPorts.sort()
+        for port in motorsPorts:
+            motor = self.motors[port]
+            if motor:
+                ret += "\t{} => {} - Port : {} - driver name : {}\n".format(str(motor),\
+                                                                            repr(motor),\
+                                                                            motor.address,\
+                                                                            motor.driver_name)
+            else:
+                ret += "\t{} => None\n".format(port)
+
         return ret
 
     def update(self):
@@ -63,7 +72,7 @@ class cBrickMotors():
         @parameter : none.
         @return : none.
         """
-        self.motors = [m for m in ev3core.list_motors()]
+        self.motors = {p : self.__bp.ports[p] for p in self.portsMotors}
 
 
     # Private methods.
@@ -89,9 +98,9 @@ class cBrickMotors():
             ret["position"] = self.__motor.position
 
         except Exception as e:
-            self.__irSensor = ev3core.InfraredSensor()
+            self.__motor = ev3core.Motor()
             if self.debug:
-                print("__getLarMotor() : can't read medium motor device => {}. New object instanced".format(e))
+                print("__getMotorsInfos() : can't read motor device => {}. New object instanced".format(e))
             ret = False
 
         return ret
