@@ -65,7 +65,7 @@ class cBrickMotors():
         @parameter : none.
         @return : none.
         """
-        self.motors = {p : self.__bp.ports[p] for p in self.portsMotors}
+        self.motors = {p:self.__bp.ports[p] for p in self.portsMotors}
 
     def getMotorsInfos(self, motor):
         """
@@ -76,8 +76,7 @@ class cBrickMotors():
         getMotorsInfos = {"lego-ev3-m-motor": self.__getMotorsInfos,
                           "lego-ev3-l-motor": self.__getMotorsInfos,
                          }
-
-        return getMotorsInfos[motor.driver_name](motor)
+        return getMotorsInfos[motor[0].driver_name](motor[0])
 
 
     # Private methods.
@@ -115,7 +114,7 @@ class cBrickMotors():
         except Exception as e:
             pass
             if self.debug:
-                print("getMotorsInfos() : can't read motor device => {}.\nMaybe unplugged".format(e))
+                print("getMotorsInfos() : can't read motor device => {}.\nMaybe removed while reading.".format(e))
             ret = False
 
         return ret

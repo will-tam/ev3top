@@ -17,8 +17,8 @@ import ev3dev.helper as ev3h
 
 # Project library import.
 import cBrickPorts as cBP
-#import cBrickSensors as cBS
 import cBrickMotors as cBM
+import cBrickSensors as cBS
 
 ######################
 
@@ -78,7 +78,7 @@ def main(arg):
         return 1
 
     try:    # Instantiate brick sensors object.
-        bs = cBM.cBrickSensors(bp)
+        bs = cBS.cBrickSensors(bp)
         bs.debug = True
     except Exception as e:
         print("Exception occured on bs init instance:", e)
@@ -92,10 +92,12 @@ def main(arg):
 
         bp.scan()       # Scan ports to detect which device is plugged.
 
+#        TODO : À DÉGAGER APRÈS OPTIMISATION DE cBrickMotors.scan()
+#        print(bp.ports)
+#        return 0
+
         bm.update()     # Update the motors ports (bm.motors).
         bs.update()     # Update the sensors ports (bs.sensors).
-#        print(bm)
-#        print(bs)
 
         print("Motors infos :")
         for port in bm.portsMotors:
@@ -104,28 +106,21 @@ def main(arg):
                 motorInfo = bm.getMotorsInfos(motor)
                 print(motorInfo)
 
-        print("Sensors infos:")     # TODO : TEST IT
+        print("")
+
+        print("Sensors infos:")
         for port in bs.portsSensors:
             sensor = bs.sensors[port]
             if sensor:
-                sensorInfo = bs.getSensorInfos(sensor)
+                sensorInfo = bs.getSensorsInfos(sensor)
                 print(sensorInfo)
 
-##        bs.colorSensorMode = "RGB-RAW"
-##        bs.irSensorMode = "IR-SEEK"
-#        bs.update()
-#        for s in bs.sensors:
-#            try:
-#                r = bs.getSensorsInfosFunc[s.driver_name]()
-#                if r:
-#                    print(r)
-#                else:
-#                    print("Use bs.debug = True to know what happened")
-#            except:
-#                pass
+        print("")
+
+#        bs.irSensorMode = "IR-SEEK"  # TODO : Comment changer le mode. Il faut passer par le port !?
+#        bs.colorSensorMode = "RGB-RAW"
 
         time.sleep(0.5)
-        print("-------")
 
     return 0
 

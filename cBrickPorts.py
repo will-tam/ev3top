@@ -15,7 +15,7 @@ class cBrickPorts():
 
     Public attributes:
 
-        ports = dictionnary of devices plugged in corresponding port.
+        ports = dictionnary of tupples of devices plugged in corresponding port, type of device.
     """
 
     # Private attributes.
@@ -29,14 +29,14 @@ class cBrickPorts():
         @parameter : none.
         @return : none.
         """
-        self.ports = {"in1" : None,
-                      "in2" : None,
-                      "in3" : None,
-                      "in4" : None,
-                      "outA" : None,
-                      "outB" : None,
-                      "outC" : None,
-                      "outD" : None,
+        self.ports = {"in1" : (None, None),
+                      "in2" : (None, None),
+                      "in3" : (None, None),
+                      "in4" : (None, None),
+                      "outA" : (None, None),
+                      "outB" : (None, None),
+                      "outC" : (None, None),
+                      "outD" : (None, None),
                      }
 
     def __str__(self):
@@ -68,15 +68,17 @@ class cBrickPorts():
         """
         # The other way (reset self.ports, for d in devices: self.ports[d.address] = d) isn't so faster.
 
-        try:
-            devices = [d for d in ev3core.list_motors()]
-            devices.extend([d for d in ev3core.list_sensors()])
+#        TODO : !!!! VOIR POUR OPTIMISATION !!!!
 
-            portsEnabled = {d.address:d for d in devices}
+        try:
+            devices = [device for device in ev3core.list_motors()]
+            devices.extend([device for device in ev3core.list_sensors()])
+
+            portsEnabledDevices = {device.address:device for device in devices}
 
             for p in self.ports.keys():
-                if p in portsEnabled.keys():
-                    self.ports[p] = portsEnabled[p]
+                if p in portsEnabledDevices.keys():
+                    self.ports[p] = (portsEnabledDevices[p], portsEnabledDevices[p].driver_name)
                 else:
                     self.ports[p] = None
 

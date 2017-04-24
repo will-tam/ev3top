@@ -39,16 +39,6 @@ class cBrickSensors():
         @parameter : bs = instance of the brick's ports object (from class cBrickPorts).
         @return : none.
         """
-#        self.getSensorsInfosFunc = {"lego-ev3-touch": self.__getTouchInfos,
-#                                    "lego-ev3-ir": self.__getIrInfos,
-#                                    "lego-ev3-color": self.__getColorInfos,
-#                                   }
-#
-#        self.__touchSensor = ev3core.TouchSensor()
-#        self.__irSensor = ev3core.InfraredSensor()
-#        self.__colorSensor = ev3core.ColorSensor()
-#
-#        self.sensors = []
         self.__bs = bs
 
         self.portsSensors = ["in1", "in2", "in3", "in4", ]
@@ -81,20 +71,27 @@ class cBrickSensors():
         @parameter : none.
         @return : none.
         """
-        self.sensors = {p : self.__bs.ports[p] for p in self.portsSensors}
+        self.sensors = {p:self.__bs.ports[p] for p in self.portsSensors}
 
     def getSensorsInfos(self, sensor):
         """
         Return informations about the sensor according to its type.
         @parameter : sensor = the sensor's object which to know informations.
-        @return : the dictionnary of values about sensor, or False if something wrong.
+        @return : the dictionnary of values about sensor, or None if something wrong.
         """
         getSensorsInfosFunc = {"lego-ev3-touch": self.__getTouchInfos,
                                "lego-ev3-ir": self.__getIrInfos,
                                "lego-ev3-color": self.__getColorInfos,
                               }
+        # As it, because the "Touch sensor" reaction seems different than the others devices.
+        try:
+            gsif = getSensorsInfosFunc[sensor[0].driver_name](sensor[0])
+        except Exception as e:
+            if self.debug:
+                print("getSensorsInfos() : can't read sensor device => {}.\nMaybe removed while reading.".format(e))
+            gsif = None
 
-        return getSensorsInfosFunc[sensor.driver_name](sensor)
+        return gsif
 
 
     # Private methods.
@@ -103,19 +100,17 @@ class cBrickSensors():
         """
         Return the values of this sensor.
         @parameter : sensor = the sensor's object which to know informations.
-        @return : Dictionnary of values from this sensor. If problem occurs, return False.
+        @return : Dictionnary of values from this sensor. If problem occurs, return {}.
         """
         ret = {}
-        try:
-            ret["name"] = sensor.driver_name
-            ret["address"] = sensor.address
-            ret["value0"] = ssensor.value(0)
-            ret["pressed"] = True if sensor.is_pressed else False
-        except Exception as e:
-            pass
-            if self.debug:
-                print("getSensorsInfos() : can't read Touch sensor device => {}.\nMaybe unplugged".format(e))
-            ret = False
+        touchSensor = ev3core.TouchSensor(sensor.address)
+
+        # see library documentation for what to use, and why the try/except using.
+        ret["name"] = touchSensor.driver_name
+        ret["address"] = touchSensor.address
+        ret["value0"] = touchSensor.value(0)
+        ret["pressed"] = True if touchSensor.is_pressed else False
+        del(touchSensor)
 
         return ret
 
@@ -123,32 +118,29 @@ class cBrickSensors():
         """
         Return the values of this sensor.
         @@parameter : sensor = the sensor's object which to know informations.
-        @return : Dictionnary of values from this sensor. If problem occurs, return False.
+        @return : Dictionnary of values from this sensor. If problem occurs, return {}.
         """
         ret = {}
-        try:
-            ret["name"] = sensor.driver_name
-            ret["address"] = sensor.address
-            ret["modes"] = sensor.modes
-            ret["mode"] = sensor.mode
-            if ret["mode"] in ["IR-PROX", "IR-REM-A"]:
-                vals = sensor.value(0)
-            elif ret["mode"] in ["IR-REMOTE", "IR-S-ALT"]:
-                vals = [sensor.value(i) for i in range(0, 4)]
-            elif ret["mode"] == "IR-SEEK":
-                vals = [sensor.value(i) for i in range(0, 8)]
-            elif ret["mode"] == "IR-CAL":
-                vals = [sensor.value(i) for i in range(0, 2)]
-            else:
-                vals = None
-            ret["values"] = vals
-            ret["proximity"] = sensor.proximity
+        irSensor = ev3core.InfraredSensor(sensor.address)
 
-        except Exception as e:
-            pass
-            if self.debug:
-                print("getSensorsInfos() : can't read IR sensor device => {}.\nMaybe unplugged".format(e))
-            ret = False
+        # see library documentation for what to use, and why the try/except using.
+        ret["name"] = irSensor.driver_name
+        ret["address"] = irSensor.address
+        ret["modes"] = irSensor.modes
+        ret["mode"] = irSensor.mode
+        if ret["mode"] in ["IR-PROX", "IR-REM-A"]:
+            vals = irSensor.value(0)
+        elif ret["mode"] in ["IR-REMOTE", "IR-S-ALT"]:
+            vals = [irSensor.value(i) for i in range(0, 4)]
+        elif ret["mode"] == "IR-SEEK":
+            vals = [irSensor.value(i) for i in range(0, 8)]
+        elif ret["mode"] == "IR-CAL":
+            vals = [irSensor.value(i) for i in range(0, 2)]
+        else:
+            vals = None
+        ret["values"] = vals
+        ret["proximity"] = irSensor.proximity
+        del(irSensor)
 
         return ret
 
@@ -159,7 +151,8 @@ class cBrickSensors():
         @return : None.
         """
         try:
-            self.__irSensor.mode = mode
+            irSensor = ev3core.InfraredSensor(sensor.address)
+            irSensor.mode = mode
 
         except Exception as e:
             if self.debug:
@@ -171,38 +164,35 @@ class cBrickSensors():
         """
         Return the values of this sensor.
         @parameter : sensor = the sensor's object which to know informations.
-        @return : Dictionnary of values from this sensor. If problem occurs, return False.
+        @return : Dictionnary of values from this sensor. If problem occurs, return {}.
         """
         ret = {}
-        try:
-            ret["name"] = sensor.driver_name
-            ret["address"] = sensor.address
-            ret["modes"] = sensor.modes
-            ret["mode"] = sensor.mode
-            if ret["mode"] in ["COL-REFLECT", "COL-AMBIENT", "COL-COLOR"]:
-                vals = sensor.value(0)
-            elif ret["mode"] == "REF-RAW":
-                vals = [sensor.value(i) for i in range(0, 2)]
-            elif ret["mode"] == "RGB-RAW":
-                vals = [sensor.value(i) for i in range(0, 3)]
-            elif ret["mode"] == "COL-CAL":
-                vals = [sensor.value(i) for i in range(0, 4)]
-            else:
-                vals = None
-            ret["values"] = vals
-            ret["ambient_light_intensity"] = sensor.ambient_light_intensity
-            ret["raw"] = sensor.raw
-            ret["color"] = sensor.color
-            ret["red"] = sensor.red
-            ret["green"] = sensor.green
-            ret["blue"] = sensor.blue
-            ret["reflected_light_intensity"] = sensor.reflected_light_intensity
+        colorSensor = ev3core.ColorSensor(sensor.address)
 
-        except Exception as e:
-            pass
-            if self.debug:
-                print("getSensorsInfos() : can't read Color sensor device => {}.\nMaybe unplugged".format(e))
-            ret = False
+        # see library documentation for what to use, and why the try/except using.
+        ret["name"] = colorSensor.driver_name
+        ret["address"] = colorSensor.address
+        ret["modes"] = colorSensor.modes
+        ret["mode"] = colorSensor.mode
+        if ret["mode"] in ["COL-REFLECT", "COL-AMBIENT", "COL-COLOR"]:
+            vals = colorSensor.value(0)
+        elif ret["mode"] == "REF-RAW":
+            vals = [colorSensor.value(i) for i in range(0, 2)]
+        elif ret["mode"] == "RGB-RAW":
+            vals = [colorSensor.value(i) for i in range(0, 3)]
+        elif ret["mode"] == "COL-CAL":
+            vals = [colorSensor.value(i) for i in range(0, 4)]
+        else:
+            vals = None
+        ret["values"] = vals
+        ret["ambient_light_intensity"] = colorSensor.ambient_light_intensity
+        ret["raw"] = colorSensor.raw
+        ret["color"] = colorSensor.color
+        ret["red"] = colorSensor.red
+        ret["green"] = colorSensor.green
+        ret["blue"] = colorSensor.blue
+        ret["reflected_light_intensity"] = colorSensor.reflected_light_intensity
+        del(colorSensor)
 
         return ret
 
@@ -224,8 +214,8 @@ class cBrickSensors():
 
     # Properties
     # Only setters.
-    colorSensorMode = property(None, __setColorSensorMode)
     irSensorMode = property(None, __setIrSensorMode)
+    colorSensorMode = property(None, __setColorSensorMode)
 
 
 if __name__ == "__main__":
