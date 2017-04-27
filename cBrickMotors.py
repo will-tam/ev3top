@@ -18,6 +18,12 @@ class cBrickMotors():
         portsMotors = the ports assigned to the motors.
         motors = discovered plugged motors list.
         debug = true to print exceptions, everelse false (default).
+
+    Properties: (see http://python-ev3dev.readthedocs.io/en/latest/motors.html)
+
+        motorCommand = command for the Large and Medium motors. (setter only)
+        motorSpeed = motor's speed.
+        motorPosition = position where the motor has to go. Run with run-to-abs-pos and run-to-rel-pos in motorCommand.
     """
 
     # Private attributes.
@@ -40,7 +46,7 @@ class cBrickMotors():
         self.debug = False
 
     def __str__(self):
-        """
+        """property(None,  __setMotorsSpeed)
         When use print() on this class
         @parameters : none.
         @return : the string to print.
@@ -76,7 +82,7 @@ class cBrickMotors():
         getMotorsInfos = {"lego-ev3-m-motor": self.__getMotorsInfos,
                           "lego-ev3-l-motor": self.__getMotorsInfos,
                          }
-        return getMotorsInfos[motor[0].driver_name](motor[0])
+        return getMotorsInfos[motor[1]](motor[0])
 
 
     # Private methods.
@@ -110,6 +116,7 @@ class cBrickMotors():
             ret["max_speed"] = motor.max_speed
             ret["polarity"] = motor.polarity
             ret["position"] = motor.position
+            ret["speed"] = motor.speed
 
         except Exception as e:
             pass
@@ -119,7 +126,68 @@ class cBrickMotors():
 
         return ret
 
+    def __setMotorCommand(self, portCmd):
+        """
+        Set command to a motor.
+        @parameter : portCmd = list with [port, command].
+        @return : None.
+        """
+        print(type(portCmd))
+        if type(portCmd) is list:
+            try:
+                print(portCmd[0], ",", portCmd[1])
+                motor = ev3core.Motor(portCmd[0])
+                motor.command = portCmd[1]
+
+            except Exception as e:
+                if self.debug:
+                    print("Can't send command to motor mode cause :", e)
+                else:
+                    pass
+
+    def __setMotorSpeed(self, portSpeed):
+        """
+        Set speed to a motor.
+        @parameter : portSpeed = list with [port, speed].
+        @return : None.
+        """
+        if type(portSpeed) is list:
+            try:
+                print(portSpeed[0], ",", portSpeed[1])
+                motor = ev3core.Motor(portSpeed[0])
+                motor.speed_sp = portSpeed[1]
+
+            except Exception as e:
+                if self.debug:
+                    print("Can't send speed_sp to motor mode cause :", e)
+                else:
+                    pass
+
+    def __setMotorPosition(self, portPosition):
+        """
+        Set position to a motor.
+        @parameter : portPosition = list with [port, position].
+        @return : None.
+        """
+        if type(portPosition) is list:
+            try:
+                print(portPosition[0], ",", portPosition[1])
+                motor = ev3core.Motor(portPosition[0])
+                motor.position_sp = portPosition[1]
+
+            except Exception as e:
+                if self.debug:
+                    print("Can't send speed_sp to motor mode cause :", e)
+                else:
+                    pass
+
+
+    # Properties
+    # Only setters.
+    motorCommand = property(None, __setMotorCommand)
+    motorSpeed = property(None, __setMotorSpeed)
+    motorPosition = property(None, __setMotorPosition)
+
 
 if __name__ == "__main__":
     help(cBrickMotors)
-

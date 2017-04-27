@@ -19,7 +19,7 @@ class cBrickSensors():
         sensors = discovered sensors list.
         debug = true to print exceptions, everelse false (default).
 
-    Properties:
+    Properties: (see http://python-ev3dev.readthedocs.io/en/latest/sensors.html)
 
         colorSensorMode = mode for the color sensor. (setter only)
         irSensorMode = mode for the ir sensor. (setter only)
@@ -85,7 +85,7 @@ class cBrickSensors():
                               }
         # As it, because the "Touch sensor" reaction seems different than the others devices.
         try:
-            gsif = getSensorsInfosFunc[sensor[0].driver_name](sensor[0])
+            gsif = getSensorsInfosFunc[sensor[1]](sensor[0])
         except Exception as e:
             if self.debug:
                 print("getSensorsInfos() : can't read sensor device => {}.\nMaybe removed while reading.".format(e))
@@ -144,21 +144,22 @@ class cBrickSensors():
 
         return ret
 
-    def __setIrSensorMode(self, mode):
+    def __setIrSensorMode(self, portMode):
         """
         Setter of the mode to the IR sensor.
-        @parameter : mode.
+        @parameter : portMode = list with [port, mode].
         @return : None.
         """
-        try:
-            irSensor = ev3core.InfraredSensor(sensor.address)
-            irSensor.mode = mode
+        if type(portMode) is list:
+            try:
+                irSensor = ev3core.InfraredSensor(portMode[0])
+                irSensor.mode = portMode[1]
 
-        except Exception as e:
-            if self.debug:
-                print("Can't change IR sensor mode cause :", e)
-            else:
-                pass
+            except Exception as e:
+                if self.debug:
+                    print("Can't change IR sensor mode cause :", e)
+                else:
+                    pass
 
     def __getColorInfos(self, sensor):
         """
@@ -196,20 +197,22 @@ class cBrickSensors():
 
         return ret
 
-    def __setColorSensorMode(self, mode):
+    def __setColorSensorMode(self, portMode):
         """
         Setter of the mode to the Color sensor.
-        @parameter : mode.
+        @parameter : portMode = list with [port, mode].
         @return : None.
         """
-        try:
-            self.__colorSensor.mode = mode
+        if type(portMode) is list:
+            try:
+                colorSensor = ev3core.ColorSensor(portMode[0])
+                colorSensor.mode = portMode[1]
 
-        except Exception as e:
-            if self.debug:
-                print("Can't change color sensor mode cause :", e)
-            else:
-                pass
+            except Exception as e:
+                if self.debug:
+                    print("Can't change color sensor mode cause :", e)
+                else:
+                    pass
 
 
     # Properties

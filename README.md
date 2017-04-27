@@ -14,6 +14,8 @@ Using soft and libs :
 Help and advices from :
 
 * [https://sites.google.com/site/ev3python/](https://sites.google.com/site/ev3python/)
+* [http://python-ev3dev.readthedocs.io/en/latest/motors.html](http://python-ev3dev.readthedocs.io/en/latest/motors.html)
+* [http://python-ev3dev.readthedocs.io/en/latest/sensors.html](http://python-ev3dev.readthedocs.io/en/latest/sensors.html)
 * ... (should be completed later)
 
 Many thanks to them all.

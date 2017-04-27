@@ -88,6 +88,8 @@ def main(arg):
         print("q to quit")
         k = getCh()
         if k == 'q':
+            for port in bm.portsMotors:
+                bm.motorCommand = [port, "reset"]
             break
 
         bp.scan()       # Scan ports to detect which device is plugged.
@@ -106,6 +108,10 @@ def main(arg):
                 motorInfo = bm.getMotorsInfos(motor)
                 print(motorInfo)
 
+#        bm.motorSpeed = ["outB", 50]
+#        bm.motorPosition = ["outB", "50"]
+#        bm.motorCommand = ["outB", "run-to-rel-pos"]
+
         print("")
 
         print("Sensors infos:")
@@ -113,12 +119,12 @@ def main(arg):
             sensor = bs.sensors[port]
             if sensor:
                 sensorInfo = bs.getSensorsInfos(sensor)
-                print(sensorInfo)
+#                print(sensorInfo)
 
         print("")
 
-#        bs.irSensorMode = "IR-SEEK"  # TODO : Comment changer le mode. Il faut passer par le port !?
-#        bs.colorSensorMode = "RGB-RAW"
+#        bs.irSensorMode = ["in2", "IR-SEEK"]
+#        bs.colorSensorMode = ["in4", "COL-AMBIENT"]
 
         time.sleep(0.5)
 

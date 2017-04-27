@@ -91,4 +91,3 @@ class cBrickPorts():
 
 if __name__ == "__main__":
     help(cBrickPorts)
-
