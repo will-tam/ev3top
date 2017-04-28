@@ -9,7 +9,7 @@ import ev3dev.helper as ev3h
 # Project library import.
 
 
-class cBrickMotors():
+class CBrickMotors():
     """
     Class for motors manipulations.
 
@@ -190,4 +190,4 @@ class cBrickMotors():
 
 
 if __name__ == "__main__":
-    help(cBrickMotors)
+    help(CBrickMotors)

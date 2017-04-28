@@ -9,7 +9,7 @@ import ev3dev.helper as ev3h
 # Project library import.
 
 
-class cBrickSensors():
+class CBrickSensors():
     """
     Class for sensors manipulations.
 
@@ -222,4 +222,4 @@ class cBrickSensors():
 
 
 if __name__ == "__main__":
-    help(cBrickSensors)
+    help(CBrickSensors)

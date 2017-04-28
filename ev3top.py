@@ -16,9 +16,9 @@ import ev3dev.brickpi as ev3bp
 import ev3dev.helper as ev3h
 
 # Project library import.
-import cBrickPorts as cBP
-import cBrickMotors as cBM
-import cBrickSensors as cBS
+import CBrickPorts as CBP
+import CBrickMotors as CBM
+import CBrickSensors as CBS
 
 ######################
 
@@ -65,20 +65,20 @@ def main(arg):
               ... = some problem occures.
     """
     try:    # Instantiate brick ports object.
-        bp = cBP.cBrickPorts()
+        bp = CBP.cBrickPorts()
     except Exception as e:
         print("Exception occured on bp init instance:", e)
         return 1
 
     try:    # Instantiate brick motors object.
-        bm = cBM.cBrickMotors(bp)
+        bm = CBM.cBrickMotors(bp)
         bm.debug = True
     except Exception as e:
         print("Exception occured on bm init instance:", e)
         return 1
 
     try:    # Instantiate brick sensors object.
-        bs = cBS.cBrickSensors(bp)
+        bs = CBS.cBrickSensors(bp)
         bs.debug = True
     except Exception as e:
         print("Exception occured on bs init instance:", e)

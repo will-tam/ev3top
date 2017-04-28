@@ -9,7 +9,7 @@ import ev3dev.helper as ev3h
 # Project library import.
 
 
-class cBrickPorts():
+class CBrickPorts():
     """
     Class for ports interface.
 
@@ -81,4 +81,4 @@ class cBrickPorts():
 
 
 if __name__ == "__main__":
-    help(cBrickPorts)
+    help(CBrickPorts)
