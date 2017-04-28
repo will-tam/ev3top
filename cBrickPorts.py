@@ -66,27 +66,18 @@ class cBrickPorts():
         @parameter : none.
         @return : none.
         """
-        # The other way (reset self.ports, for d in devices: self.ports[d.address] = d) isn't so faster.
+        # The other way (reset self.ports, for d in devices: self.ports[d.address] = d) isn't faster.
 
-#        TODO : !!!! VOIR POUR OPTIMISATION !!!!
-
+#        TODO : !!!! VOIR POUR OPTIMISATION PLUS PROFONDE !!!!
         try:
-            devices = [device for device in ev3core.list_motors()]
-            devices.extend([device for device in ev3core.list_sensors()])
-
-            portsEnabledDevices = {device.address:device for device in devices}
-
+            portsEnabledDevices = {device.address:device for device in [device for device in ev3core.list_motors()] + [device for device in ev3core.list_sensors()]}
             for p in self.ports.keys():
-                if p in portsEnabledDevices.keys():
-                    self.ports[p] = (portsEnabledDevices[p], portsEnabledDevices[p].driver_name)
-                else:
-                    self.ports[p] = None
+                self.ports[p] = (portsEnabledDevices[p], portsEnabledDevices[p].driver_name)\
+                    if p in portsEnabledDevices.keys()\
+                    else None
 
-        except Exception as e:
+        except:
             pass
-
-
-    # Private methods.
 
 
 if __name__ == "__main__":

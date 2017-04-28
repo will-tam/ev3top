@@ -119,7 +119,7 @@ def main(arg):
             sensor = bs.sensors[port]
             if sensor:
                 sensorInfo = bs.getSensorsInfos(sensor)
-#                print(sensorInfo)
+                print(sensorInfo)
 
         print("")
 
