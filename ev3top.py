@@ -65,38 +65,37 @@ def main(arg):
               ... = some problem occures.
     """
     try:    # Instantiate brick ports object.
-        bp = CBP.cBrickPorts()
+        bp = CBP.CBrickPorts()
     except Exception as e:
         print("Exception occured on bp init instance:", e)
         return 1
 
     try:    # Instantiate brick motors object.
-        bm = CBM.cBrickMotors(bp)
+        bm = CBM.CBrickMotors(bp)
         bm.debug = True
     except Exception as e:
         print("Exception occured on bm init instance:", e)
         return 1
 
     try:    # Instantiate brick sensors object.
-        bs = CBS.cBrickSensors(bp)
+        bs = CBS.CBrickSensors(bp)
         bs.debug = True
     except Exception as e:
         print("Exception occured on bs init instance:", e)
         return 1
 
+    bp.start()
+
     while True:
         print("q to quit")
         k = getCh()
         if k == 'q':
+            bp.quit = True
             for port in bm.portsMotors:
                 bm.motorCommand = [port, "reset"]
             break
 
-        bp.scan()       # Scan ports to detect which device is plugged.
-
-#        TODO : À DÉGAGER APRÈS OPTIMISATION DE cBrickMotors.scan()
-#        print(bp.ports)
-#        return 0
+        t0 = time.time()
 
         bm.update()     # Update the motors ports (bm.motors).
         bs.update()     # Update the sensors ports (bs.sensors).
@@ -126,12 +125,46 @@ def main(arg):
 #        bs.irSensorMode = ["in2", "IR-SEEK"]
 #        bs.colorSensorMode = ["in4", "COL-AMBIENT"]
 
+        t1 = time.time()
+        print("Temps total :", t1 - t0)
+
+        time.sleep(0.5)
+
+    bp.join()
+
+    return 0
+
+def mainAlternative(arg):
+    """
+    Main function.
+    @parameters : some arguments, in case of use.
+    @return : 0 = all was good.
+              ... = some problem occures.
+    """
+    while True:
+        print("q to quit")
+        k = getCh()
+        if k == 'q':
+            break
+
+        legoPort = ev3core.LegoPort(address='in3')
+
+        print("{} - {} => {}".format(str(legoPort), repr(legoPort), dir(legoPort)))
+
+        print("legoPort.address=>", legoPort.address)
+        print("legoPort.driver_name=>", legoPort.driver_name)
+        print("legoPort.mode=>", legoPort.mode)
+        print("legoPort.modes=>", legoPort.modes)
+        print("legoPort.status =>", legoPort.status)
+
         time.sleep(0.5)
 
     return 0
+
 
 ######################
 
 if __name__ == "__main__":
     rc = main(sys.argv[1:])      # Keep only the argus after the script name.
+#    rc = mainAlternative(sys.argv[1:])      # Keep only the argus after the script name.
     sys.exit(rc)

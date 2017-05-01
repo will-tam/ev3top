@@ -132,7 +132,6 @@ class CBrickMotors():
         @parameter : portCmd = list with [port, command].
         @return : None.
         """
-        print(type(portCmd))
         if type(portCmd) is list:
             try:
                 print(portCmd[0], ",", portCmd[1])

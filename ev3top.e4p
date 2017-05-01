@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project ev3top -->
-<!-- Saved: 2017-04-28, 19:44:39 -->
+<!-- Saved: 2017-04-28, 22:03:08 -->
 <!-- Copyright (C) 2017 Will,  -->
 <Project version="5.1">
   <Language></Language>
@@ -13,13 +13,13 @@
   <Email></Email>
   <Eol index="0"/>
   <Sources>
+    <Source>CBrickMotors.py</Source>
+    <Source>CBrickPorts.py</Source>
+    <Source>CBrickSensors.py</Source>
     <Source>HTMLServer.py</Source>
     <Source>README.md</Source>
     <Source>TODO.md</Source>
     <Source>VERSION.md</Source>
-    <Source>cBrickMotors.py</Source>
-    <Source>cBrickPorts.py</Source>
-    <Source>cBrickSensors.py</Source>
     <Source>ev3top.py</Source>
   </Sources>
   <Forms/>

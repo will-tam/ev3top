@@ -23,7 +23,6 @@ class CBrickSensors():
 
         colorSensorMode = mode for the color sensor. (setter only)
         irSensorMode = mode for the ir sensor. (setter only)
-
     """
 
     # Private attributes.
